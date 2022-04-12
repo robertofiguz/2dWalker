@@ -306,7 +306,7 @@ class Walker(Env):
         done,
         info)
 
-    def render(self, mode='human'):
+    def render(self, mode='human', close=False):
         if self.viewer is None:
             self.viewer = pygame.init()
             pymunk.pygame_util.positive_y_is_up = True
