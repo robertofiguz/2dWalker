@@ -5,7 +5,7 @@ from gym.utils import seeding
 import math
 import pymunk
 import pygame
-
+from pymunk import pygame_util
 screen_width = 1904
 screen_height = 960
 
@@ -309,10 +309,10 @@ class Walker(Env):
     def render(self, mode='human', close=False):
         if self.viewer is None:
             self.viewer = pygame.init()
-            pymunk.pygame_util.positive_y_is_up = True
+            pygame_util.positive_y_is_up = True
             self.screen = pygame.display.set_mode((screen_width, screen_height))
             self.clock = pygame.time.Clock()
-        self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
+        self.draw_options = pygame_util.DrawOptions(self.screen)
         self.screen.fill((255, 255, 255))
         self.space.debug_draw(self.draw_options)
         pygame.display.flip()
