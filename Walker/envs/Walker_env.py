@@ -8,7 +8,7 @@ import pygame
 from pymunk import pygame_util
 screen_width = 1904
 screen_height = 960
-
+target = 400
 class Robot():
     def __init__(self, space):
         
@@ -32,7 +32,6 @@ class Robot():
         self.head_shape.friction = friction
         self.head_joint = pymunk.PivotJoint(self.head_body, self.body, (-5, -30), (-5, 50))
         self.head_joint2 = pymunk.PivotJoint(self.head_body, self.body, (5, -30), (5, 50))
-
 
         arm_size = (100, 20)
         self.left_arm_upper_shape = pymunk.Poly.create_box(None, arm_size)
@@ -221,7 +220,7 @@ class Robot():
         space.add(body, land)
 
         body_2 = pymunk.Body(body_type=pymunk.Body.STATIC)
-        body_2.position = (100, -50)
+        body_2.position = (target, -50) 
         t_block = pymunk.Segment(body_2, (0, 100), (20, 100), 10)
         space.add(body_2, t_block)
 
@@ -257,8 +256,9 @@ class Walker(Env):
       return -1 #set to only get reward if reaches target
 
     def check_complete(self):
-      if self.robot.body.position[0] == 100: # 500 is the position of the target
+      if self.robot.body.position[0] == target: # 500 is the position of the target
         return True
+
     def step(self, actions):
         actions = [(a-1)*2 for a in actions]
         self.robot.ru_motor.rate = actions[0]
@@ -289,7 +289,7 @@ class Walker(Env):
         if self.check_fall():
           done = True
           reward = -1000 # -200 reresents the highest penalty
-
+            #1000 should be set to the worst penalty possible calculated using gamma
         if self.check_complete(): 
           done = True  
           reward = 100
