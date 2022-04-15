@@ -8,7 +8,7 @@ import pygame
 from pymunk import pygame_util
 screen_width = 1904
 screen_height = 960
-target = 300
+target = 260
 class Robot():
     def __init__(self, space):
         
@@ -235,26 +235,26 @@ class Walker(Env):
         self.last_horizontal_pos = 0
         self.last_vertical_pos = 0
     def check_fall(self):
-      if self.robot.body.position[1] < self.initial_height-50:
-            return True
-      if self.robot.body.position[0] < 0 or self.robot.body.position[0] > screen_width:
-            return True
-      return False
-    def calculate_reward(self):
       shape = self.space.shapes[-2]
       contact_lf = len(self.robot.lf_shape.shapes_collide(b=shape).points)
       contact_rf = len(self.robot.rf_shape.shapes_collide(b=shape).points)
 
-      if (self.robot.body.position[0] - self.last_horizontal_pos) > 1:
-        reward = 10
-      elif 1 > (self.robot.body.position[0] - self.last_horizontal_pos) > -1:
-        reward = -10
-      elif (self.robot.body.position[0] - self.last_horizontal_pos) < -1:
-        reward = -100
+      if self.robot.body.position[1] < self.initial_height-50:
+            return True
+      if self.robot.body.position[0] < 0 or self.robot.body.position[0] > screen_width:
+            return True
       if not contact_lf and not contact_rf:
-        reward -= 10
-      return 0
-
+            return True
+      return False
+    def calculate_reward(self):
+        if (self.robot.body.position[0] - self.last_horizontal_pos) > 1:
+            reward = 20
+        elif 1 > (self.robot.body.position[0] - self.last_horizontal_pos) > -1:
+            reward = -10
+        elif (self.robot.body.position[0] - self.last_horizontal_pos) < -1:
+            reward = - 50
+        return reward
+      
     def check_complete(self):
       if self.robot.body.position[0] == target: # 500 is the position of the target
         return True
