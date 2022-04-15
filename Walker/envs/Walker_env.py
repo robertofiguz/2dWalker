@@ -8,7 +8,7 @@ import pygame
 from pymunk import pygame_util
 screen_width = 1904
 screen_height = 960
-target = 400
+target = 200
 class Robot():
     def __init__(self, space):
         
@@ -246,14 +246,14 @@ class Walker(Env):
       contact_rf = len(self.robot.rf_shape.shapes_collide(b=shape).points)
 
       if (self.robot.body.position[0] - self.last_horizontal_pos) > 1:
-        reward = 0
+        reward = 10
       elif 1 > (self.robot.body.position[0] - self.last_horizontal_pos) > -1:
-        reward = -100
+        reward = -10
       elif (self.robot.body.position[0] - self.last_horizontal_pos) < -1:
-        reward = -200
+        reward = -100
       if not contact_lf and not contact_rf:
-        reward -= 50
-      return -1 #set to only get reward if reaches target
+        reward -= 10
+      return 0
 
     def check_complete(self):
       if self.robot.body.position[0] == target: # 500 is the position of the target
@@ -288,11 +288,11 @@ class Walker(Env):
 
         if self.check_fall():
           done = True
-          reward = -1000 # -200 reresents the highest penalty
+          reward = -200 # -200 reresents the highest penalty
             #1000 should be set to the worst penalty possible calculated using gamma
         if self.check_complete(): 
           done = True  
-          reward = 100
+          reward = 200
 
         info = {}
         observation = self.robot.get_data()
