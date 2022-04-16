@@ -235,24 +235,24 @@ class Walker(Env):
         self.last_horizontal_pos = 0
         self.last_vertical_pos = 0
     def check_fall(self):
-      shape = self.space.shapes[-2]
-      contact_lf = len(self.robot.lf_shape.shapes_collide(b=shape).points)
-      contact_rf = len(self.robot.rf_shape.shapes_collide(b=shape).points)
 
       if self.robot.body.position[1] < self.initial_height-50:
             return True
       if self.robot.body.position[0] < 0 or self.robot.body.position[0] > screen_width:
             return True
-      if not contact_lf and not contact_rf:
-            return True
       return False
     def calculate_reward(self):
+        shape = self.space.shapes[-2]
+        contact_lf = len(self.robot.lf_shape.shapes_collide(b=shape).points)
+        contact_rf = len(self.robot.rf_shape.shapes_collide(b=shape).points)
         if (self.robot.body.position[0] - self.last_horizontal_pos) > 1:
-            reward = 20
+            reward = 1
         elif 1 > (self.robot.body.position[0] - self.last_horizontal_pos) > -1:
-            reward = -10
+            reward = -1
         elif (self.robot.body.position[0] - self.last_horizontal_pos) < -1:
-            reward = - 50
+            reward = - 2
+        if not contact_lf and not contact_rf:
+                reward -= 2
         return reward
       
     def check_complete(self):
@@ -288,11 +288,11 @@ class Walker(Env):
 
         if self.check_fall():
           done = True
-          reward = -200 # -200 reresents the highest penalty
+          reward = -10 # -200 reresents the highest penalty
             #1000 should be set to the worst penalty possible calculated using gamma
         if self.check_complete(): 
           done = True  
-          reward = 200
+          reward = 10
 
         info = {}
         observation = self.robot.get_data()
