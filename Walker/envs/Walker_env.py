@@ -8,7 +8,7 @@ import pygame
 from pymunk import pygame_util
 screen_width = 1904
 screen_height = 960
-target = 260
+target = 350
 class Robot():
     def __init__(self, space):
         
