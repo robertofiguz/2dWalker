@@ -1,6 +1,6 @@
 import gym
 from gym import error, spaces, utils, Env
-from gym.spaces import Discrete, MultiDiscrete, Box
+from gym.spaces import MultiDiscrete, Box
 from gym.utils import seeding
 import math
 import pymunk
@@ -246,17 +246,17 @@ class Walker(Env):
         contact_lf = len(self.robot.lf_shape.shapes_collide(b=shape).points)
         contact_rf = len(self.robot.rf_shape.shapes_collide(b=shape).points)
         if (self.robot.body.position[0] - self.last_horizontal_pos) > 1:
-            reward = 1
+            reward = 10
         elif 1 > (self.robot.body.position[0] - self.last_horizontal_pos) > -1:
-            reward = -1
+            reward = 9
         elif (self.robot.body.position[0] - self.last_horizontal_pos) < -1:
-            reward = - 2
+            reward = 8
         if not contact_lf and not contact_rf:
-                reward -= 2
+                reward -= 6
         return reward
       
     def check_complete(self):
-      if self.robot.body.position[0] == target: # 500 is the position of the target
+      if self.robot.body.position[0] >= target: # 500 is the position of the target
         return True
 
     def step(self, actions):
@@ -288,11 +288,11 @@ class Walker(Env):
 
         if self.check_fall():
           done = True
-          reward = -10 # -200 reresents the highest penalty
+          reward = 0 # -200 reresents the highest penalty
             #1000 should be set to the worst penalty possible calculated using gamma
         if self.check_complete(): 
           done = True  
-          reward = 10
+          reward = 16
 
         info = {}
         observation = self.robot.get_data()
@@ -310,8 +310,8 @@ class Walker(Env):
         if self.viewer is None:
             self.viewer = pygame.init()
             pygame_util.positive_y_is_up = True
-            self.screen = pygame.display.set_mode((screen_width, screen_height))
             self.clock = pygame.time.Clock()
+            self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.draw_options = pygame_util.DrawOptions(self.screen)
         self.screen.fill((255, 255, 255))
         self.space.debug_draw(self.draw_options)
