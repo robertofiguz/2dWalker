@@ -236,7 +236,7 @@ class Walker(Env):
         self.last_vertical_pos = 0
         self.step_nr = 0
         self.max_step = 900
-        
+
     def check_fall(self):
 
       if self.robot.body.position[1] < self.initial_height-50:
@@ -261,8 +261,6 @@ class Walker(Env):
     def check_complete(self):
         if self.robot.body.position[0] >= target: # 500 is the position of the target
             return True
-        if self.step_nr >= self.max_step:
-            return True
 
     def step(self, actions):
         self.step_nr += 1
@@ -279,26 +277,17 @@ class Walker(Env):
         self.robot.update()
         self.space.step(1/50)
 
-
-        self.robot.ru_motor.rate = 0
-        self.robot.rd_motor.rate = 0
-        self.robot.lu_motor.rate = 0
-        self.robot.ld_motor.rate = 0
-        self.robot.la_motor.rate = 0
-        self.robot.ra_motor.rate = 0
-        self.robot.lf_motor.rate = 0
-        self.robot.rf_motor.rate = 0
-
         done = False
         reward = self.calculate_reward()
 
         if self.check_fall():
-          done = True
-          reward = 0 # -200 reresents the highest penalty
-            #1000 should be set to the worst penalty possible calculated using gamma
+            done = True
+            reward = 0 
         if self.check_complete(): 
-          done = True  
-          reward = 16
+            done = True  
+            reward = 16
+        if self.step_nr >= self.max_step:
+            done = True
 
         info = {}
         observation = self.robot.get_data()
