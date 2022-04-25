@@ -234,6 +234,9 @@ class Walker(Env):
         self.viewer = None
         self.last_horizontal_pos = 0
         self.last_vertical_pos = 0
+        self.step_nr = 0
+        self.max_step = 900
+        
     def check_fall(self):
 
       if self.robot.body.position[1] < self.initial_height-50:
@@ -256,10 +259,13 @@ class Walker(Env):
         return reward
       
     def check_complete(self):
-      if self.robot.body.position[0] >= target: # 500 is the position of the target
-        return True
+        if self.robot.body.position[0] >= target: # 500 is the position of the target
+            return True
+        if self.step_nr >= self.max_step:
+            return True
 
     def step(self, actions):
+        self.step_nr += 1
         actions = [(a-1)*2 for a in actions]
         self.robot.ru_motor.rate = actions[0]
         self.robot.rd_motor.rate = actions[1]
@@ -321,6 +327,7 @@ class Walker(Env):
 
         
     def reset(self):
+        self.step_nr = 0
         self.space = pymunk.Space()
         self.space.gravity = (0.0, -990)
         self.robot = Robot(self.space)
