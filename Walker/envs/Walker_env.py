@@ -1,7 +1,7 @@
-import gym
-from gym import error, spaces, utils, Env
-from gym.spaces import MultiDiscrete, Box
-from gym.utils import seeding
+import gymnasium as gym
+from gymnasium import error, spaces, utils, Env
+from gymnasium.spaces import MultiDiscrete, Box
+from gymnasium.utils import seeding
 import math
 import pymunk
 import pygame
@@ -295,10 +295,13 @@ class Walker(Env):
         self.last_horizontal_pos = self.robot.body.position[0]
         self.last_vertical_pos = self.robot.body.position[1]
 
+        truncated = False
+
         return(
         observation,
         reward,
         done,
+        truncated,
         info)
 
     def render(self, mode='human', close=False):
@@ -324,5 +327,5 @@ class Walker(Env):
         self.initial_height = self.robot.body.position[1]
         self.initial_horizontal = self.robot.body.position[0]
         observation = self.robot.get_data()
-        return(observation)
+        return(observation,None)
 
